@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "user-chart.fullname" . }}-user-job
+spec:
+  template:
+    metadata:
+      name: {{ template "user-chart.fullname" . }}-user-job
+    spec:
+      initContainers:
+        - name: check-db-ready
+          image: postgres:latest
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-config
+                  key: DB_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-config
+                  key: DB_PORT
+          command:
+            - sh
+            - "-c"
+            - |
+              until pg_isready -h $POSTGRES_HOST  -p  $POSTGRES_PORT;
+              do echo waiting for database; sleep 2; done;
+      containers:
+        - name: postgres-install-job
+          image: postgres:latest
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-secret
+                  key: DB_NAME
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-secret
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-secret
+                  key: DB_PASSWORD
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-config
+                  key: DB_HOST
+          command:
+            - sh
+            - -c
+            - psql postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB --command "create table users (id bigserial primary key, username varchar, first_name varchar, last_name varchar, email varchar, phone varchar)"
+      restartPolicy: Never
+  backoffLimit: 0

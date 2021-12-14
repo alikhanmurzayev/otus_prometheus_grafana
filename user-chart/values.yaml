@@ -1,0 +1,30 @@
+replicaCount: 2
+
+image:
+  repository: murzayev/otus_kuber_part_4
+
+service:
+  type: NodePort
+  port: 9000
+
+
+postgresql:
+  postgresqlDatabase: "mydb"
+  postgresqlUsername: "myuser"
+  postgresqlPassword: "mypassword"
+  service:
+    port: 5432
+
+user:
+  port: "8888"
+  db_driver: "postgres"
+  db_sslmode: "disable"
+
+ingress:
+  enabled: true
+  host: arch.homework
+  paths: [ ]
+
+metrics:
+  serviceMonitor:
+    enabled: true

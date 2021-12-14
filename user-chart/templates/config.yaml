@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "user-chart.fullname" . }}-config
+data:
+  PORT: {{ .Values.user.port | quote }}
+  DB_DRIVER: {{ .Values.user.db_driver | quote }}
+  DB_HOST: "{{ template "postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+  DB_PORT: {{ .Values.postgresql.service.port | quote }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "user-chart.fullname" . }}-secret
+type: Opaque
+data:
+  DB_NAME: {{ .Values.postgresql.postgresqlDatabase | b64enc | quote }}
+  DB_USER: {{ .Values.postgresql.postgresqlUsername | b64enc | quote }}
+  DB_PASSWORD: {{ .Values.postgresql.postgresqlPassword | b64enc | quote }}
+  DB_SSLMODE: {{ .Values.user.db_sslmode | b64enc | quote }}

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "user-chart.fullname" . }}
+  labels:
+  {{- include "user-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+  {{- include "user-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+    {{- include "user-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: user
+          image: {{ .Values.image.repository }}:{{ .Chart.AppVersion }}
+          ports:
+            - name: web
+              containerPort: {{ .Values.user.port }}
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-config
+                  key: PORT
+            - name: DB_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-config
+                  key: DB_DRIVER
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-secret
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-secret
+                  key: DB_PASSWORD
+            - name: DB_SSLMODE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "user-chart.fullname" . }}-secret
+                  key: DB_SSLMODE
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.user.port }}
+              path: /health
+            initialDelaySeconds: 3
+            periodSeconds: 1
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              port: {{ .Values.user.port }}
+              path: /health
+            initialDelaySeconds: 3
+            periodSeconds: 1
+            timeoutSeconds: 2
