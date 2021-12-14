@@ -21,7 +21,7 @@ var totalRequests int64
 func main() {
 	runtime.GOMAXPROCS(2)
 
-	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*3)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Minute*10)
 	defer cancelFunc()
 
 	group := errgroup.Group{}
