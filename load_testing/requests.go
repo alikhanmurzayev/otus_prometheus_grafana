@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"math/rand"
 	"net/http"
-	"time"
 )
 
 func makeRequests(ctx context.Context, processID int) error {
@@ -43,7 +41,7 @@ func makeRequests(ctx context.Context, processID int) error {
 		}
 		//log.Printf("process %d could not get user with id %d", processID, *user.ID)
 
-		time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
+		//time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
 	}
 
 	return nil

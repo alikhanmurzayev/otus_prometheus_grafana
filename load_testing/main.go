@@ -19,9 +19,9 @@ const (
 var totalRequests int64
 
 func main() {
-	runtime.GOMAXPROCS(2)
+	runtime.GOMAXPROCS(5)
 
-	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Minute*10)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Minute*30)
 	defer cancelFunc()
 
 	group := errgroup.Group{}
@@ -44,7 +44,7 @@ func main() {
 		}
 	})
 
-	for i := 1; i <= 4; i++ {
+	for i := 1; i <= 20; i++ {
 		processID := i
 		group.Go(func() error {
 			return makeRequests(ctx, processID)
