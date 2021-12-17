@@ -242,7 +242,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "histogram_quantile(0.5, (sum(rate(app_request_latency_seconds_bucket[20s])) by (le))) * 1000",
+          "expr": "histogram_quantile(0.5, (sum(rate(app_request_latency_seconds_bucket[1m])) by (le))) * 1000",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "0.5 Q",
@@ -254,7 +254,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "histogram_quantile(0.95, (sum(rate(app_request_latency_seconds_bucket[20s])) by (le))) * 1000",
+          "expr": "histogram_quantile(0.95, (sum(rate(app_request_latency_seconds_bucket[1m])) by (le))) * 1000",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
@@ -267,7 +267,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "histogram_quantile(0.99, (sum(rate(app_request_latency_seconds_bucket[20s])) by (le))) * 1000",
+          "expr": "histogram_quantile(0.99, (sum(rate(app_request_latency_seconds_bucket[1m])) by (le))) * 1000",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
@@ -438,7 +438,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(rate(app_request_count[20s])) by (method)",
+          "expr": "sum(rate(app_request_count[1m])) by (method)",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{ method }}",
@@ -607,7 +607,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(rate(app_5xx_error_count[20s])) by (method)",
+          "expr": "sum(rate(app_5xx_error_count[1m])) by (method)",
           "interval": "",
           "legendFormat": "{{ method }}",
           "refId": "A"
@@ -776,7 +776,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "histogram_quantile(1.0, (sum(rate(app_request_latency_seconds_bucket[20s])) by (le))) * 1000",
+          "expr": "histogram_quantile(1.0, (sum(rate(app_request_latency_seconds_bucket[1m])) by (le))) * 1000",
           "interval": "",
           "intervalFactor": 3,
           "legendFormat": "MAX",
@@ -802,6 +802,6 @@
   "timezone": "",
   "title": "User service",
   "uid": "PsOuHVTnz",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
