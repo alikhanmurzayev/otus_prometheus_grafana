@@ -44,7 +44,7 @@ func main() {
 		}
 	})
 
-	for i := 1; i <= 20; i++ {
+	for i := 1; i <= 4; i++ {
 		processID := i
 		group.Go(func() error {
 			return makeRequests(ctx, processID)

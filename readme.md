@@ -3,21 +3,19 @@
 ### Clone the repo:
 
 ```bash
-git clone https://github.com/alikhanmurzayev/otus_kuber_part_3.git && cd otus_kuber_part_3
+git clone https://github.com/alikhanmurzayev/otus_prometheus_grafana.git && cd otus_prometheus_grafana
 ```
 
 ### Prepare workspace:
 
 ```bash
-minikube addons enable ingress
-kubectl create namespace user
-kubectl config set-context --current --namespace user
+make prepare-workspace
 ```
 
-### Start services:
+### Start User service:
 
 ```bash
-kubectl apply -f .
+make start-user-service
 ```
 
 Wait a little.
@@ -25,12 +23,12 @@ Wait a little.
 ### Health check
 
 ```bash
-curl -H 'Host: arch.homework' "http://arch.homework/health"
+curl -H 'Host: arch.homework' "http://$(minikube ip)/health"
 # Output: {"status": "ok"}
 ```
 
 ### Run test:
 
 ```bash
-newman run newman run postman_test/postman_test.json 
+go run ./load_testing/
 ```

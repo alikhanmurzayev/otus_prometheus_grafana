@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
 func makeRequests(ctx context.Context, processID int) error {
@@ -18,7 +20,7 @@ func makeRequests(ctx context.Context, processID int) error {
 			return fmt.Errorf("createUser: %w", err)
 		}
 		//log.Printf("process %d created user with name %d", processID, *user.ID)
-		for i := 0; i < 10; i++ {
+		for i := 0; i < 3; i++ {
 			user, err = getUser(ctx, *user.ID)
 			if err != nil {
 				return fmt.Errorf("getUser: %w", err)
@@ -41,7 +43,12 @@ func makeRequests(ctx context.Context, processID int) error {
 		}
 		//log.Printf("process %d could not get user with id %d", processID, *user.ID)
 
-		//time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
+		err = panicRequest(ctx)
+		if err == nil {
+			return fmt.Errorf("panicRequest: expected error, but got nil")
+		}
+		//log.Printf("process %d got panic: %s", processID, err)
+		time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
 	}
 
 	return nil
@@ -62,4 +69,8 @@ func updateUser(ctx context.Context, user *User) (*User, error) {
 
 func deleteUser(ctx context.Context, id int64) error {
 	return makeRequest(ctx, nil, nil, http.MethodDelete, fmt.Sprintf("/user/%d", id))
+}
+
+func panicRequest(ctx context.Context) error {
+	return makeRequest(ctx, nil, nil, http.MethodGet, "/panic")
 }
