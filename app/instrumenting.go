@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/prometheus/client_golang/prometheus"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -12,17 +13,17 @@ var (
 	MetricsRequestLatency = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "app_request_latency_seconds",
 		Help: "Application Request Latency",
-	}, []string{"method"})
+	}, []string{"method", "status"})
 
 	MetricsRequestCount = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "app_request_count",
 		Help: "Application Request Count",
-	}, []string{"method"})
+	}, []string{"method", "status"})
 
 	Metrics5xxErrorCount = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "app_5xx_error_count",
 		Help: "Application 5xx Error Count",
-	}, []string{"method"})
+	}, []string{"method", "status"})
 
 	metrics = []prometheus.Collector{
 		MetricsRequestLatency,
@@ -40,13 +41,12 @@ func init() {
 }
 
 func Instrumenting(c *fiber.Ctx) error {
-	c.OriginalURL()
-	labels := prometheus.Labels{
-		"method": string(c.Request().Header.Method()),
-	}
-
 	startTime := time.Now()
 	err := c.Next()
+	labels := prometheus.Labels{
+		"method": string(c.Request().Header.Method()),
+		"status": strconv.Itoa(c.Response().StatusCode()),
+	}
 	MetricsRequestCount.With(labels).Inc()
 	MetricsRequestLatency.With(labels).Observe(time.Now().Sub(startTime).Seconds())
 	if c.Response().StatusCode() >= http.StatusInternalServerError {

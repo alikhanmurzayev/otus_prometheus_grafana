@@ -32,3 +32,12 @@ curl -H 'Host: arch.homework' "http://$(minikube ip)/health"
 ```bash
 go run ./load_testing/
 ```
+
+### Grafana dashboard
+
+![Screenshot](./screenshots/1.png?raw=true)
+![Screenshot](./screenshots/2.png?raw=true)
+
+### Alert
+
+![Screenshot](./screenshots/3.png?raw=true)

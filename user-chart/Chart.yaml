@@ -4,9 +4,9 @@ description: A Helm chart for User application
 
 type: application
 
-version: 0.2.3
+version: 0.2.4
 
-appVersion: "v5"
+appVersion: "v6"
 
 dependencies:
   - name: postgresql
